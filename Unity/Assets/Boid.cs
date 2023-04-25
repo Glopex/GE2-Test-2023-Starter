@@ -11,6 +11,8 @@ public class Boid : MonoBehaviour
     public Vector3 velocity = Vector3.zero;
     public float mass = 1;
 
+    public float turningspeed;
+
     [Range(0.0f, 10.0f)]
     public float damping = 0.01f;
 
@@ -18,6 +20,9 @@ public class Boid : MonoBehaviour
     public float banking = 0.1f;
     public float maxSpeed = 5.0f;
     public float maxForce = 10.0f;
+
+    public GameObject cameraref;
+   public bool Control;
 
     public void OnDrawGizmos()
     {
@@ -97,11 +102,49 @@ public class Boid : MonoBehaviour
         return force;
     }
 
+    public void setcontroll(bool state)
+    {
+        Control = state;
+    }
 
     // Update is called once per frame
     void Update()
     {
-        force = Calculate();
+        
+        if (Control == true)
+        {
+            if (Input.GetKey(KeyCode.W))
+            {
+               force += cameraref.transform.localPosition+new Vector3(0,0,10*turningspeed);
+            }
+        else if (Input.GetKey(KeyCode.S))
+        {
+                force += cameraref.transform.localPosition + new Vector3(0, 0, -10 * turningspeed);
+            }
+        else if (Input.GetKey(KeyCode.A))
+        {
+                force += cameraref.transform.localPosition + new Vector3(-10 * turningspeed, 0, 0);
+            }
+        else if (Input.GetKey(KeyCode.D))
+        {
+                force += cameraref.transform.localPosition + new Vector3(10 * turningspeed, 0, 0);
+            }
+        else if (Input.GetKey(KeyCode.E))
+        {
+                force += cameraref.transform.localPosition + new Vector3(0, 10 * turningspeed, 0);
+            }
+        else if (Input.GetKey(KeyCode.F))
+        {
+                force += cameraref.transform.localPosition + new Vector3(0, -10 * turningspeed, 0);
+            }
+            
+        }
+        else force = Calculate();
+        
+        //force = Calculate();
+
+
+
         acceleration = force / mass;
         velocity += acceleration * Time.deltaTime;
 
